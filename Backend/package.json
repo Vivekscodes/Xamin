@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "build": "bun build server.js --outdir=dist",
+    "lint": "eslint .",
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.1",
+    "nodemon": "^3.1.9"
+  }
+}
