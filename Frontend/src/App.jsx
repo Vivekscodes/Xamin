@@ -1,11 +1,17 @@
-
+import React from 'react';
+import Admin from './Pages/Admin';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const App = () => {
-	return (
-		<div>
-			<h1 class="text-3xl font-bold underline">Hello world!</h1>
-		</div>
-	);
+    return (
+        <>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Admin />} />
+                </Routes>
+            </BrowserRouter>
+        </>
+    );
 };
 
 export default App;
