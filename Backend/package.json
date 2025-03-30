@@ -20,6 +20,9 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.1",
-    "nodemon": "^3.1.9"
+    "multer": "^1.4.5-lts.2",
+    "nodemon": "^3.1.9",
+    "shamir": "^0.7.1",
+    "shamirs-secret-sharing": "^2.0.0"
   }
 }
