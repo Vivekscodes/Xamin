@@ -2,8 +2,33 @@ import React from 'react'
 import Navbar from '../Components/Navbar'
 import Add_Exam from '../Components/Add_Exam'
 import {useState} from 'react'
+import axios from 'axios';
+
 
 const Admin = () => {
+
+  async function fetchUserRoleExams(userId) {
+    try {
+      
+      const response = await axios.get(http://localhost:3000/exams/:);
+      const allExams = response.data.data;
+      
+      const userRoleExams = {
+        boardMember: allExams.filter(exam => exam.b_members.includes(userId)),
+        paperFormatter: allExams.filter(exam => exam.p_formaters.includes(userId)),
+        paperSetter: allExams.filter(exam => exam.papers.some(paper => paper.setter === userId))
+      };
+      
+      return userRoleExams;
+      
+    
+    } catch (error) {
+      console.error('Error fetching user role exams:', error);
+      throw error;
+    }
+  }
+
+
    
     const [isAddExamOpen, setIsAddExamOpen] = useState(false)
 
