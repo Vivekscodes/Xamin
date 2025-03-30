@@ -16,7 +16,7 @@ const Admin = () => {
     {
       id: 1,
       examName: "JEE Main 2024",
-      subject: "PCM",
+      duration: "3 hours",
       date: "2024-04-15",
       totalStudents: 1200000,
       status: "Upcoming"
@@ -24,7 +24,7 @@ const Admin = () => {
     {
       id: 2,
       examName: "NEET UG 2024",
-      subject: "PCB",
+      duration: "3.5 hours",
       date: "2024-05-05",
       totalStudents: 1800000,
       status: "Upcoming"
@@ -32,7 +32,7 @@ const Admin = () => {
     {
       id: 3,
       examName: "CUET UG 2024",
-      subject: "General",
+      duration: "4 hours",
       date: "2024-05-20",
       totalStudents: 1500000,
       status: "Upcoming"
@@ -40,7 +40,7 @@ const Admin = () => {
     {
       id: 4,
       examName: "JEE Advanced 2024",
-      subject: "PCM Advanced",
+      duration: "3 hours",
       date: "2024-06-10",
       totalStudents: 250000,
       status: "Upcoming"
@@ -48,7 +48,7 @@ const Admin = () => {
     {
       id: 5,
       examName: "GATE 2024",
-      subject: "Computer Science",
+      duration: "2.5 hours",
       date: "2024-02-10",
       totalStudents: 98000,
       status: "Completed"
@@ -56,14 +56,12 @@ const Admin = () => {
     {
       id: 6,
       examName: "CAT 2023",
-      subject: "Management",
+      duration: "2 hours",
       date: "2023-11-26",
       totalStudents: 250000,
       status: "Completed"
     }
   ]
-
-
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-teal-50 to-orange-50'>
@@ -78,7 +76,7 @@ const Admin = () => {
               <thead className='bg-gray-50'>
                 <tr>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Exam Name</th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Subject</th>
+                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Duration</th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Date</th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Students</th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase'>Status</th>
@@ -88,7 +86,7 @@ const Admin = () => {
                 {examData.map((exam) => (
                   <tr key={exam.id} className='hover:bg-gray-50'>
                     <td className='px-6 py-4 whitespace-nowrap'>{exam.examName}</td>
-                    <td className='px-6 py-4 whitespace-nowrap'>{exam.subject}</td>
+                    <td className='px-6 py-4 whitespace-nowrap'>{exam.duration}</td>
                     <td className='px-6 py-4 whitespace-nowrap'>{exam.date}</td>
                     <td className='px-6 py-4 whitespace-nowrap'>{exam.totalStudents}</td>
                     <td className='px-6 py-4 whitespace-nowrap'>
@@ -105,6 +103,7 @@ const Admin = () => {
           </div>
         </div>
       </div>
+      
       <button 
         className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-teal-500 to-orange-500 rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow duration-300 text-white"
         onClick={() => setIsAddExamOpen(true)}
