@@ -8,6 +8,7 @@ const router = express.Router();
 
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import User from "../Models/User.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,6 +23,9 @@ router.post("/create", async (req, res) => {
             });
         }
         const newExam = await Exam.create({ name, admin, date, duration });
+        const user = await User.findById(admin)
+        user.exams.push(newExam._id)
+        await user.save()
         await newExam.save();
         res.status(201).json({
             status: "success",

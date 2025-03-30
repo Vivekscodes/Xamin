@@ -55,7 +55,7 @@ const examSchema = new mongoose.Schema(
         },
         encryptionKey: {
             type: String,
-            default: "-1",
+            default: null,
         },
         date: {
             type: Date,
