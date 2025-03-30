@@ -51,6 +51,7 @@ const examSchema = new mongoose.Schema(
         ],
         decryptedPaper: {
             type: String,
+            default: null
         },
         encryptionKey: {
             type: String,

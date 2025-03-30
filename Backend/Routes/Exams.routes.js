@@ -120,15 +120,13 @@ router.post("/upload-final-paper", upload.single("file"), async (req, res) => {
         encrypted = Buffer.concat([encrypted, cipher.final()]);
 
         // ✅ Step 4: Save the encrypted binary file
-        const encryptedFilePath = `encrypted/${Date.now()}-encrypted.bin`;
-        const absoluteEncryptedPath = join(
-            __dirname,
-            `../${encryptedFilePath}`
-        );
+        const encryptedFilePath = `encrypted/${Date.now()}-${crypto.randomInt(999999)}-encrypted.bin`;
+        const absoluteEncryptedPath = join(__dirname, `../${encryptedFilePath}`);
 
-        // Save encrypted binary with IV at the beginning
-        fs.writeFileSync(absoluteEncryptedPath, Buffer.concat([iv, encrypted]));
+        // ✅ Use async write
+        await fs.promises.writeFile(absoluteEncryptedPath, Buffer.concat([iv, encrypted]));
 
+        // ✅ Step 5: Split the encryption key into Shamir shards
         const shards = shamir.split(ENCRYPTION_KEY, {
             shares: TOTAL_PARTS,
             threshold: MINIMUM_PARTS,
@@ -143,19 +141,20 @@ router.post("/upload-final-paper", upload.single("file"), async (req, res) => {
             sequence: index + 1,
         }));
 
-        // ✅ Step 5: Store file path and encryption key (HEX format)
+        // ✅ Step 6: Store the encrypted file path and key shards
         exam.f_paper.push(encryptedFilePath);
         exam.keyParts = distributedKeys;
-        exam.encryptionKey = ENCRYPTION_KEY.toString("base64"); // Store key as HEX string
+        exam.encryptionKey = ENCRYPTION_KEY.toString("base64"); 
         await exam.save();
 
-        // ✅ Clean up temporary file
+        // ✅ Clean up temporary uploaded file
         fs.unlinkSync(filePath);
 
         res.status(200).json({
             message: "File encrypted successfully",
             file: encryptedFilePath,
         });
+
     } catch (error) {
         console.error("Encryption failed:", error);
         res.status(500).json({
@@ -173,11 +172,7 @@ router.post("/decrypt", async (req, res) => {
     try {
         const { examId, keyShards } = req.body;
 
-        console.log("Received key shards:", keyShards);
-
-        // ✅ 1. Retrieve the exam record
         const exam = await Exam.findById(examId);
-
         if (!exam) {
             return res.status(404).json({
                 status: "failure",
@@ -185,29 +180,31 @@ router.post("/decrypt", async (req, res) => {
             });
         }
 
-        // ✅ 2. Verify key shard format
-        if (!keyShards || keyShards.length < MINIMUM_PARTS) {
-            console.error("Missing or insufficient key shards:", keyShards);
-            return res.status(400).json({
+        const filePath = exam.f_paper[exam.f_paper.length - 1];
+
+        // ✅ Retrieve the encrypted file path
+        const encryptedFilePath = join(__dirname, `../${filePath}`);
+
+        if (!fs.existsSync(encryptedFilePath)) {
+            return res.status(404).json({
                 status: "failure",
-                message: `At least ${MINIMUM_PARTS} key parts are required`,
+                message: "Encrypted file not found!",
             });
         }
 
-        // ✅ 3. Sort and decode the key shards
+        const encryptedData = fs.readFileSync(encryptedFilePath);
+
+        // ✅ Extract IV and content
+        const iv = encryptedData.slice(0, IV_LENGTH);
+        const encryptedContent = encryptedData.slice(IV_LENGTH);
+
+        // ✅ Combine key shards
         const sortedShards = keyShards
             .sort((a, b) => a.sequence - b.sequence)
-            .map((shard) => {
-                console.log("Decoding shard:", shard);
-                return Buffer.from(shard.keyShard, "base64");  // Ensure base64 decoding
-            });
+            .map((shard) => Buffer.from(shard.keyShard, "base64"));
 
-        console.log("Sorted Shards:", sortedShards);
-
-        // ✅ 4. Combine the shards into the original encryption key
         const reconstructedKey = shamir.combine(sortedShards);
 
-        console.log("Reconstructed Key:", reconstructedKey);
         if (!reconstructedKey || reconstructedKey.length !== 32) {
             console.error("Invalid reconstructed key:", reconstructedKey);
             return res.status(400).json({
@@ -216,47 +213,24 @@ router.post("/decrypt", async (req, res) => {
             });
         }
 
-        // ✅ 5. Retrieve the latest encrypted file
-        const filePath = exam.f_paper[exam.f_paper.length - 1];
-        const encryptedFilePath = join(__dirname, `../${filePath}`);
-
-        if (!fs.existsSync(encryptedFilePath)) {
-            console.error("Encrypted file not found:", encryptedFilePath);
-            return res.status(404).json({
-                status: "failure",
-                message: "Encrypted file not found!",
-            });
-        }
-
-        // ✅ 6. Read the encrypted binary file
-        const encryptedData = fs.readFileSync(encryptedFilePath);
-
-        // ✅ 7. Extract IV and encrypted content
-        const iv = encryptedData.slice(0, IV_LENGTH);
-        const encryptedContent = encryptedData.slice(IV_LENGTH);
-
-        console.log("IV Length:", iv.length);
-        console.log("Encrypted Content Length:", encryptedContent.length);
-
-        // ✅ 8. Decrypt the content with the reconstructed key
+        // ✅ Decrypt the content
         const decipher = crypto.createDecipheriv("aes-256-cbc", reconstructedKey, iv);
 
         let decrypted = decipher.update(encryptedContent);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
 
-        // ✅ 9. Save the decrypted PDF
+        // ✅ Save the decrypted PDF
         const pdfFilePath = `decrypted/${Date.now()}-decrypted.pdf`;
         const decryptedFilePath = join(__dirname, `../${pdfFilePath}`);
 
-        exam.decryptedPapers.push(pdfFilePath)
+        // ✅ Store the decrypted file path in the database
+        exam.decryptedPaper = pdfFilePath; 
+        await exam.save();
 
-        fs.writeFileSync(decryptedFilePath, decrypted);
+        await fs.promises.writeFile(decryptedFilePath, decrypted);
 
-        // ✅ 10. Send the decrypted file
+        // ✅ Send the decrypted PDF
         res.status(200).sendFile(decryptedFilePath);
-
-        // ✅ 11. Clean up the encrypted file
-        fs.unlinkSync(encryptedFilePath);
 
     } catch (error) {
         console.error("Decryption failed:", error);
@@ -267,5 +241,6 @@ router.post("/decrypt", async (req, res) => {
         });
     }
 });
+
 
 export default router;

@@ -28,10 +28,12 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const {roll_no, password} = req.body;
     try {
-        const foundStudent = await Student.findOne({roll_no});
+        const foundStudent = await Student.findOne({roll_no}).populate('exams');
         if(!foundStudent) return res.status(404).json({status: 'failure', message: 'Student not found.'});
         if(foundStudent.password!== password) return res.status(401).json({status: 'failure', message: 'Incorrect password.'});
-        const decryptedPapers = foundStudent.decryptedPaper
+        console.log(foundStudent)
+        const decryptedPaper = foundStudent.exams[1].decryptedPapers
+        if(!decryptedPaper) return res.status(404).json({status: 'failure', message: 'Paper not found.'});
         const paper = path.join(__dirname, `../${decryptedPaper}`);
         
         res.status(200).sendFile(paper)
@@ -42,4 +44,16 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.post('/add-paper', async (req, res) => {
+    const {examId, studentId} = req.body;
+    try {
+        const foundStudent = await Student.findById(studentId);
+        if(!foundStudent) return res.status(404).json({status: 'failure', message: 'Student not found.'});
+        foundStudent.exams.push(examId)
+        await foundStudent.save();
+        res.status(200).json({status: 'success', message: 'Paper added successfully!'});
+    } catch (err) {
+        res.status(500).json({status: 'failure', message: 'Something went wrong', error: err.message});
+    }
+})
 export default router;
