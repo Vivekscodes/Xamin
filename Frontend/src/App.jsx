@@ -2,14 +2,17 @@ import React from 'react';
 import Admin from './Pages/Admin';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Student from './Pages/Student';
+import AdminLogin from './Login/AdminLogin';
+
 
 const App = () => {
     return (
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Admin />} />
-					<Route path="/student" element={<Student />} />
+                    <Route path="/" element={<AdminLogin />} />\
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/student" element={<Student />} />
                 </Routes>
             </BrowserRouter>
         </>
