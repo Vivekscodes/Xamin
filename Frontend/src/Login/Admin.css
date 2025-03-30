@@ -1,0 +1,165 @@
+/* Admin.css */
+.admin-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-login-form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.admin-login-form-container h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: #2c3e50;
+    font-size: 24px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.admin-login-input {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s ease-in-out;
+    width: 100%;
+}
+
+.admin-login-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.admin-login-input:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+}
+
+.admin-login-button {
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 8px;
+}
+
+.admin-login-button:hover:not(:disabled) {
+    background-color: #2b6cb0;
+}
+
+.admin-login-button:disabled {
+    background-color: #90cdf4;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 4px;
+    background-color: rgba(229, 62, 62, 0.1);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #e53e3e;
+}
+
+.lockout-message {
+    color: #dd6b20;
+    font-size: 14px;
+    background-color: rgba(221, 107, 32, 0.1);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #dd6b20;
+}
+
+/* Admin Dashboard Styles */
+.admin-dashboard {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.admin-dashboard h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.admin-dashboard p {
+    margin-bottom: 16px;
+    color: #4a5568;
+    font-size: 16px;
+}
+
+.admin-logout-button {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 20px;
+}
+
+.admin-logout-button:hover {
+    background-color: #c53030;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+
+    .admin-login-form-container,
+    .admin-dashboard {
+        padding: 20px;
+    }
+
+    .admin-login-input,
+    .admin-login-button,
+    .admin-logout-button {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+}
