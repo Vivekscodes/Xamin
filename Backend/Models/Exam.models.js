@@ -51,10 +51,11 @@ const examSchema = new mongoose.Schema(
         ],
         decryptedPaper: {
             type: String,
+            default: null
         },
         encryptionKey: {
             type: String,
-            default: "-1",
+            default: null,
         },
         date: {
             type: Date,
