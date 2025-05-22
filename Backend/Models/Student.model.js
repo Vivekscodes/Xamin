@@ -1,56 +1,53 @@
+```javascript
 import mongoose from "mongoose";
 
+// Define the schema for a Student
 const studentSchema = new mongoose.Schema(
 	{
-		//     name String
-		//   phone String
-		//   email String
-		//   aadhar String
-		//   password String
-		//   exams ObjectID[]
-		//   role String
-		//   status String
-
 		name: {
 			type: String,
-			required: true,
+			required: true, // Name is mandatory
 		},
 		phone: {
 			type: String,
-			required: true,
+			required: true, // Phone number is mandatory
 		},
 		email: {
 			type: String,
-			required: true,
+			required: true, // Email is mandatory
 		},
 		aadhar: {
 			type: String,
-			required: true,
+			required: true, // Aadhar number is mandatory
 		},
-		roll_no: {
-			type: String, 
-			required: true
+		rollNo: {
+			type: String,
+			required: true, // Roll number is mandatory
 		},
 		gender: {
 			type: String,
-			enum: ["male", "female", "other"],
-			required: true,
+			enum: ["male", "female", "other"], // Gender must be one of these values
+			required: true, // Gender is mandatory
 		},
 		password: {
 			type: String,
-			required: true,
+			required: true, // Password is mandatory
 		},
 		exams: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: "Exam",
+				ref: "Exam", // Reference to the Exam model
 			},
 		],
 	},
 	{
-		timestamps: true,
+		timestamps: true, // Automatically add createdAt and updatedAt timestamps
 	}
 );
 
+// Create the Student model from the schema
 const Student = mongoose.model("Student", studentSchema);
+
+// Export the Student model
 export default Student;
+```
